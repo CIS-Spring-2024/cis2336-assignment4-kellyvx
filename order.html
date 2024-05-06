@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="style3.css" />
+<link rel="script type/js" href="script.js">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>University of Houston Cafeteria Order Form</title>
+</head>
+<body>
+
+<h2>University of Houston Cafeteria Order Form</h2>
+
+<form id="orderForm">
+  <label for="foodItem">Select Food Item:</label>
+  <select id="foodItem">
+    <option value="Avocado Toast">Avocado Toast</option>
+    <option value="Grilled Chicken Caesar Salad">Grilled Chicken Caesar Salad</option>
+    <option value="Classic Beef Burger">Classic Beef Burger</option>
+    <option value="Falafel Wrap">Falafel Wrap</option>
+    <option value="Chef's Special Pizza">Chef's Special Pizza</option>
+    <option value="Chicken Fried Steak">Chicken Fried Steak</option>
+    <option value="Fresh Fruit Cup">Fresh Fruit Cup</option>
+    <option value="French Fries">French Frie</option>
+    <option value="Bottled Water">Bottled Water</option>
+
+  </select><br><br>
+
+  <label for="quantity">Quantity:</label>
+  <input type="number" id="quantity" min="1" value="1"><br><br>
+
+  <button type="button" onclick="addToCart()">Add to Cart</button>
+</form>
+
+<div id="cart">
+  <h3>Cart</h3>
+  <ul id="cartItems"></ul>
+</div>
+
+<script>
+function addToCart() {
+  var foodItem = document.getElementById("foodItem").value;
+  var quantity = document.getElementById("quantity").value;
+  
+  var cartItems = document.getElementById("cartItems");
+  var listItem = document.createElement("li");
+  listItem.textContent = quantity + "x " + foodItem;
+  cartItems.appendChild(listItem);
+  
+
+}
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.post('/order', (req, res) => {
+  
+    const { item1, item2, item3 } = req.body;
+ 
+    const totalAmount = calculateTotal(item1, item2, item3);
+    res.redirect(`/confirmation?total=${totalAmount}`);
+});
+
+app.get('/confirmation', (req, res) => {
+    const totalAmount = req.query.total;
+    res.send(`Your total order amount is: $${totalAmount}`);
+});
+
+app.listen(port, () => {
+    console.log(`Server is listening at http://localhost:${port}`);
+});
+
+
+function calculateTotal(item1, item2, item3) {
+  
+    const pricePerItem = 5;
+    const total = (parseInt(item1) + parseInt(item2) + parseInt(item3)) * pricePerItem;
+    return total;
+}
+
+function addToCart() {
+    var foodItem = document.getElementById("foodItem").value;
+    var quantity = document.getElementById("quantity").value;
+    
+    var cartItems = document.getElementById("cartItems");
+    var listItem = document.createElement("li");
+    listItem.textContent = quantity + "x " + foodItem;
+    cartItems.appendChild(listItem);
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
